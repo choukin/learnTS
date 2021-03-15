@@ -26,7 +26,7 @@
             </div>
         </div>
     </div>
-    <script src="../../chapter01/test/index.js"></script>
+    <!-- <script src="../../chapter01/test/index.js"></script> -->
 
     <!-- Optional JavaScript; choose one of the two! -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -40,6 +40,73 @@
     <script src="script/MarkdownParser.js"></script>
     <script>
         new HtmlHandler().TextChangeHandler('markdown','markdown-output')
+    </script>
+    <script>
+        /*
+* 在网上看到用 new RegExp() 比 正则字面量  速度快
+* 网址：https://www.cnblogs.com/52cik/p/js-regular-literal-regexp.html
+* 我没测试过，姑且一试，以后有机会弄个测试出来
+* */
+
+/*
+* 正则放定义的原因：
+* 是我不想在函数里重复定义正则，比较损性能，但如果不是多次使用级别的，那也损不了多少性。
+* */
+// var reg =  /<[^>]+>/gi;  //过滤所有的html标签
+// var reg =  new RegExp('<[^>]+>','gi');  //过滤所有的html标签，不包括内容
+
+// var reg2 = /<(img|br|hr|input)[^>]*>/gi;  //只匹配img、br、hr、input标签
+// var reg2 = new RegExp('<(img|br|hr|input)[^>]*>','gi');  //只匹配img、br、hr、input标签
+
+// var reg3 = /<(\S*)[^>]*>[^<]*<\/(\1)>/gi;        //分组匹配，过滤所有的html标签，包括内容
+// var reg3 = new RegExp('<(\\S*)[^>]*>[^<]*<\\/(\\1)>','gi');  //分组匹配，过滤所有的html标签，包括内容
+// var reg3 = new RegExp('<(\\S*)[^>]*>[^<]*<\\/(\\1)>','gi');  //分组匹配，过滤所有的html标签，包括内容
+
+
+
+
+/*
+* 将所有的标签过滤，不过滤标签内内容
+* */
+// function filterHtml(str){
+//     if(typeof str !='string'){  //不是字符串
+//         return str;
+//     }
+
+//     return str.replace(reg,'');
+// }
+
+/*
+* 讲所有的标签过滤，也过滤标签内的内容
+* str 需要过滤的字符串
+* isbool  为false则需要单标签过滤，为true则不需要单标签过滤
+* */
+// function filterHtmlOrContainer(str,isbool) {
+//     if(typeof str !='string'){  //不是字符串
+//         return str;
+//     }
+//     var result = str;
+//     if(!isbool){  //先把单标签过滤了
+//         result = result.replace(reg2, '');
+//     }
+//     result = result.replace(reg3,'');    //先经过分组匹配，把双标签去除，如果是嵌套标签，则会先将嵌套标签内的双标签过滤掉
+//     if(reg3.test(result)) { //如果为true，则代表还有标签
+//         return filterHtmlOrContainer(result, true);
+//     }else {
+//         return result;
+//     }
+
+// }
+// var tag = 'continuation-identifier'
+// var str = '<header class="page-heading"><div class="page-head-content"><p style="text-align:center;">[<span class="restricted-editing-exception" uid="DE0000000001" representation_type="textbox" only_read="0">重庆唯医骨科医院</span>]</p><p style="text-align:center;"><span style="font-size:18px;"><strong>病程记录</strong></span></p><figure class="table"><table style="border-bottom:0px solid hsl(0, 0%, 100%);border-left:0px solid hsl(0, 0%, 100%);border-right:0px solid hsl(0, 0%, 100%);border-top:0px solid hsl(0, 0%, 100%);"><tbody><tr><td style="border-bottom:0px solid hsl(0, 0%, 100%);border-left:0px solid hsl(0, 0%, 100%);border-right:0px solid hsl(0, 0%, 100%);border-top:0px solid hsl(0, 0%, 100%);">姓名：[<span class="restricted-editing-exception" uid="DE0000000002" representation_type="textbox" only_read="1">赵二夏</span>]</td><td style="border-bottom:0px solid hsl(0, 0%, 100%);border-left:0px solid hsl(0, 0%, 100%);border-right:0px solid hsl(0, 0%, 100%);border-top:0px solid hsl(0, 0%, 100%);">性别：[<span class="restricted-editing-exception" uid="DE0000000003" representation_type="dropbox" only_read="1">男</span>]</td><td style="border-bottom:0px solid hsl(0, 0%, 100%);border-left:0px solid hsl(0, 0%, 100%);border-right:0px solid hsl(0, 0%, 100%);border-top:0px solid hsl(0, 0%, 100%);">年龄：[<span class="restricted-editing-exception" uid="DE0000000004" representation_type="textbox" only_read="1">31岁</span>]</td><td style="border-bottom:0px solid hsl(0, 0%, 100%);border-left:0px solid hsl(0, 0%, 100%);border-right:0px solid hsl(0, 0%, 100%);border-top:0px solid hsl(0, 0%, 100%);">床位号：[<span class="restricted-editing-exception" uid="DE0000000005" representation_type="textbox" only_read="0">75</span>]</td><td style="border-bottom:0px solid hsl(0, 0%, 100%);border-left:0px solid hsl(0, 0%, 100%);border-right:0px solid hsl(0, 0%, 100%);border-top:0px solid hsl(0, 0%, 100%);">住院号：[<span class="restricted-editing-exception" uid="DE0000000006" representation_type="textbox" only_read="1">99019</span>]</td></tr></tbody></table></figure></div></header><div class="course-region"><div class="page-head-content"><p>[<span class="restricted-editing-exception" uid="DE0000000015" representation_type="timebox" only_read="0">2021-03-11 10:38:55</span>]</p><p style="text-align:center;"><strong>接班记录</strong></p><p>&nbsp;</p><p>患者[<span class="restricted-editing-exception" uid="DE0000000002" representation_type="textbox" only_read="1">赵二夏</span>]，[<span class="restricted-editing-exception" uid="DE0000000003" representation_type="dropbox" only_read="1">男</span>]，[<span class="restricted-editing-exception" uid="DE0000000004" representation_type="textbox" only_read="1">31岁</span>]。</p><div class="ds-textarea ck-widget" uid="DE0000000016" contenteditable="false"><div class="ds-textarea-content"><p>班记录班记录班记录班记录班记录班记录</p></div></div><p>于[<span class="restricted-editing-exception" uid="DE0000000007" representation_type="timebox" only_read="1">2021-03-09 12:38</span>]入院。</p><p>入院情况：</p><div class="ds-textarea ck-widget" uid="DE0000000057" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>入院诊断：[<span class="restricted-editing-exception" uid="DE0000000058" representation_type="searchbox" only_read="0">IgG4相关疾病</span>][<span class="restricted-editing-exception restricted-editing-exception_collapsed" uid="DE0000000466" representation_type="textbox" only_read="0"></span>]</p><p>诊疗经过：</p><div class="ds-textarea ck-widget" uid="DE0000000059" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>目前情况：</p><div class="ds-textarea ck-widget" uid="DE0000000060" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>目前诊断：[<span class="restricted-editing-exception restricted-editing-exception_collapsed" uid="DE0000000061" representation_type="textbox" only_read="0"></span>]</p><p>接班诊疗计划：</p><div class="ds-textarea ck-widget" uid="DE0000000431" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>&nbsp;</p><p>医师签名：[<span class="restricted-editing-exception restricted-editing-exception_collapsed" uid="DE0000000024" representation_type="textbox" only_read="0"></span>]</p></div></div><div class="course-region"><div class="page-head-content"><p>[<span class="restricted-editing-exception" uid="DE0000000015" representation_type="timebox" only_read="0">2021-03-11 10:39:15</span>]</p><p style="text-align:center;"><strong>接班记录</strong></p><p>&nbsp;</p><p>患者[<span class="restricted-editing-exception" uid="DE0000000002" representation_type="textbox" only_read="1">赵二夏</span>]，[<span class="restricted-editing-exception" uid="DE0000000003" representation_type="dropbox" only_read="1">男</span>]，[<span class="restricted-editing-exception" uid="DE0000000004" representation_type="textbox" only_read="1">31岁</span>]。</p><div class="ds-textarea ck-widget" uid="DE0000000016" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>于[<span class="restricted-editing-exception" uid="DE0000000007" representation_type="timebox" only_read="1">2021-03-09 12:38</span>]入院。</p><p>入院情况：</p><div class="ds-textarea ck-widget" uid="DE0000000057" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>入院诊断：[<span class="restricted-editing-exception" uid="DE0000000058" representation_type="searchbox" only_read="0">IgG4相关疾病</span>][<span class="restricted-editing-exception restricted-editing-exception_collapsed" uid="DE0000000466" representation_type="textbox" only_read="0"></span>]</p><p>诊疗经过：</p><div class="ds-textarea ck-widget" uid="DE0000000059" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>目前情况：</p><div class="ds-textarea ck-widget" uid="DE0000000060" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>目前诊断：[<span class="restricted-editing-exception restricted-editing-exception_collapsed" uid="DE0000000061" representation_type="textbox" only_read="0"></span>]</p><p>接班诊疗计划：</p><div class="ds-textarea ck-widget" uid="DE0000000431" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>&nbsp;</p><p>医师签名：[<span class="restricted-editing-exception restricted-editing-exception_collapsed" uid="DE0000000024" representation_type="textbox" only_read="0"></span>]</p><p class="continuation-identifier ck-widget" style="display:none;" contenteditable="false"><input style="display:none;" value="----------------------------------------------------------------续----打----开----始----------------------------------------------------------------"></p></div></div><div class="course-region"><div class="page-head-content"><p>[<span class="restricted-editing-exception" uid="DE0000000015" representation_type="timebox" only_read="0">2021-03-11 10:39:51</span>]</p><p style="text-align:center;"><strong>接班记录</strong></p><p>&nbsp;</p><p>患者[<span class="restricted-editing-exception" uid="DE0000000002" representation_type="textbox" only_read="1">赵二夏</span>]，[<span class="restricted-editing-exception" uid="DE0000000003" representation_type="dropbox" only_read="1">男</span>]，[<span class="restricted-editing-exception" uid="DE0000000004" representation_type="textbox" only_read="1">31岁</span>]。</p><div class="ds-textarea ck-widget" uid="DE0000000016" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>于[<span class="restricted-editing-exception" uid="DE0000000007" representation_type="timebox" only_read="1">2021-03-09 12:38</span>]入院。</p><p>入院情况：</p><div class="ds-textarea ck-widget" uid="DE0000000057" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>入院诊断：[<span class="restricted-editing-exception" uid="DE0000000058" representation_type="searchbox" only_read="0">IgG4相关疾病</span>][<span class="restricted-editing-exception restricted-editing-exception_collapsed" uid="DE0000000466" representation_type="textbox" only_read="0"></span>]</p><p>诊疗经过：</p><div class="ds-textarea ck-widget" uid="DE0000000059" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>目前情况：</p><div class="ds-textarea ck-widget" uid="DE0000000060" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>目前诊断：[<span class="restricted-editing-exception restricted-editing-exception_collapsed" uid="DE0000000061" representation_type="textbox" only_read="0"></span>]</p><p>接班诊疗计划：</p><div class="ds-textarea ck-widget" uid="DE0000000431" contenteditable="false"><div class="ds-textarea-content"><p>&nbsp;</p></div></div><p>&nbsp;</p><p>医师签名：[<span class="restricted-editing-exception restricted-editing-exception_collapsed" uid="DE0000000024" representation_type="textbox" only_read="0"></span>]</p></div></div>'
+// var coustem = document.createElement('div')
+// coustem.innerHTML = str
+// var cons = coustem.querySelectorAll('.continuation-identifier')
+// // coustem.removeChild(cons[0])
+// cons[0].remove()
+// console.log(coustem.innerHTML);
+//document.documentElement.innerHTML
+// var htmlstr = filterHtmlOrContainer(str,false,)
     </script>
    
   </body>

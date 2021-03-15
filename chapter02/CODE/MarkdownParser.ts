@@ -1,4 +1,5 @@
 class HtmlHandler{
+    private markdownChange :MarkDown = new MarkDown;
     public TextChangeHandler(id:string,output:string):void{
         let markdown = <HTMLTextAreaElement>document.getElementById(id)
         let markdownOutput = <HTMLLabelElement>document.getElementById(output)
@@ -12,7 +13,18 @@ class HtmlHandler{
                     markdownOutput.innerHTML = "<p></p>"
                 }
             }
+            markdown.onload = (e)=>{
+                this.RenderHtmlContent(markdown, markdownOutput)
+            }
         } 
+    }
+
+    private RenderHtmlContent(markdown:HTMLTextAreaElement, markdownOutput:HTMLLabelElement) {
+        if(markdown.value) {
+            markdownOutput.innerHTML = this.markdownChange.ToHtml(markdown.value)
+        } else {
+            markdownOutput.innerHTML = '<p></p>'
+        }
     }
 }
 
@@ -93,7 +105,6 @@ abstract class VisitorBase implements IVisitor{
     constructor(private readonly tagType:TagType,private readonly tagTypeToHtml:TagTypeToHtml){}
     Visitor(token:ParseElement,markdownDocument:IMarkdownDocument):void{
         markdownDocument.Add(this.tagTypeToHtml.OpeningTag(this.tagType),token.CurrentLine,this.tagTypeToHtml.CloseingTag(this.tagType))
-
     }
 }
 
@@ -246,5 +257,19 @@ class ChainOfResponsibilityFactory{
         horizontalRule.SetNext(paragraph)
 
         return header1
+    }
+}
+
+class MarkDown{
+    public ToHtml(text: string):string{
+        let document :IMarkdownDocument = new MarkdownDocument()
+        let header1 :Header1ChainHandler = new ChainOfResponsibilityFactory().Build(document)
+        let lines: string[] = text.split(`\n`)
+        for (let index = 0; index < lines.length; index++) {
+            let parseElement:ParseElement = new ParseElement()
+            parseElement.CurrentLine = lines[index]
+            header1.HandleRequest(parseElement)
+        }
+        return document.Get()
     }
 }
